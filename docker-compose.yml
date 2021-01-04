@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=task
+      - POSTGRES_USER=task_admin
+      - POSTGRES_PASSWORD=123qwe
+    ports:
+      - "5411:5432"
+    volumes:
+      - "./postgres:/var/lib/postgresql/data"
+
+  web:
+    build: ./
+    restart: always
+    command: bash -c "export env=docker && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
